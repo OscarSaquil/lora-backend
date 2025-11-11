@@ -1,0 +1,13 @@
+node_modules/
+.env
+*.log
+.DS_Store
+.vscode/
+
+# Archivos locales de Arduino
+*.hex
+*.elf
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
