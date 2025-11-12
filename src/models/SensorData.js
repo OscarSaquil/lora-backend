@@ -1,70 +1,33 @@
+//src/models/SensorData.js
 const mongoose = require('mongoose');
 
-const sensorDataSchema = new mongoose.Schema({
-  // Tipo de dato recibido
-  type: {
-    type: String,
-    default: 'ultra'
-  },
-  
-  // Indica si la lectura fue exitosa
-  ok: {
-    type: Boolean,
-    required: true
-  },
-  
-  // Distancia medida por el sensor (cm)
-  dist_cm: {
-    type: Number,
-    required: false
-  },
-  
-  // Profundidad calculada (cm)
-  depth_cm: {
-    type: Number,
-    required: false
-  },
-  
-  // Altura del sensor sobre el nivel 0 (cm)
-  h_cm: {
-    type: Number,
-    required: false
-  },
-  
-  // Timestamp del dispositivo (millis)
-  ts: {
-    type: Number,
-    required: false
-  },
-  
-  // RSSI del paquete LoRa (dBm)
-  rssi: {
-    type: Number,
-    required: false
-  },
-  
-  // SNR del paquete LoRa
-  snr: {
-    type: Number,
-    required: false
-  },
-  
-  // Texto raw recibido
-  rawData: {
-    type: String,
-    required: false
-  },
-  
-  // Timestamp del servidor
-  receivedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+const isFiniteNumber = v => typeof v === 'number' && Number.isFinite(v);
 
-// Índices para consultas eficientes
-sensorDataSchema.index({ receivedAt: -1 });
-sensorDataSchema.index({ ok: 1 });
-sensorDataSchema.index({ type: 1 });
+const sensorDataSchema = new mongoose.Schema({
+  type: { type: String, default: 'ultra', index: true }, // único tipo permitido
+  ok:   { type: Boolean, required: true, index: true },
+
+  // Métricas del sensor (parseadas, NO confiar en rawData)
+  dist_cm:  { type: Number },
+  depth_cm: { type: Number },
+  h_cm:     { type: Number },
+  ts:       { type: Number },
+
+  // Radio
+  rssi: { type: Number },
+  snr:  { type: Number },
+
+  // Crudo sólo cuando el payload fue válido (opcional)
+  rawData: { type: String },
+
+  receivedAt: { type: Date, default: Date.now, index: true }
+}, { timestamps: true });
+
+// Validaciones suaves (si vienen, que sean números finitos)
+sensorDataSchema.path('dist_cm').validate(v => (v === undefined) || isFiniteNumber(v), 'dist_cm inválido');
+sensorDataSchema.path('depth_cm').validate(v => (v === undefined) || isFiniteNumber(v), 'depth_cm inválido');
+sensorDataSchema.path('h_cm').validate(v => (v === undefined) || isFiniteNumber(v), 'h_cm inválido');
+
+sensorDataSchema.index({ type: 1, ok: 1, receivedAt: -1 });
 
 module.exports = mongoose.model('SensorData', sensorDataSchema);

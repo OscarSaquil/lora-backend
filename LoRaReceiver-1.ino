@@ -1,3 +1,4 @@
+//  LoRaReceiver-1.ino
 /* Heltec LoRa32 — RECEIVER + OLED UI (sin images.h)
  * - Mantiene tu configuración original LoRa (Heltec LoRaWan_APP)
  * - Muestra estado, último mensaje, RSSI/SNR, conteos en OLED

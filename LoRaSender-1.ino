@@ -1,3 +1,4 @@
+//  LoRaSender-1.ino
 /* Heltec LoRa32 — SENDER por Monitor Serial (sin envío automático)
  * + Comando ULTRA: mide con HC-SR04 y envía JSON {dist_cm, depth_cm, h_cm, ts}
  */

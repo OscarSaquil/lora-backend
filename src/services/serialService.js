@@ -1,3 +1,4 @@
+//src/services/serialService.js
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const SensorData = require('../models/SensorData');
