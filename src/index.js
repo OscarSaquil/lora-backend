@@ -1,11 +1,13 @@
 //src/index.js
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/database');
 const SerialService = require('./services/serialService');
 const apiRoutes = require('./routes/api');
+const mcpRoutes = require('./routes/mcp');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +22,7 @@ connectDB();
 
 // Rutas
 app.use('/api', apiRoutes);
+app.use('/api/mcp', mcpRoutes);
 
 // Ruta raíz
 app.get('/', (req, res) => {
@@ -29,6 +32,7 @@ app.get('/', (req, res) => {
     mode: process.env.NODE_ENV || 'development',
     serialEnabled: !!process.env.SERIAL_PORT,
     endpoints: {
+      // Datos de sensores
       'GET /api/data': 'Obtener todos los datos (paginado)',
       'GET /api/data/latest': 'Obtener últimas lecturas',
       'GET /api/data/stats': 'Estadísticas de las lecturas',
@@ -36,7 +40,24 @@ app.get('/', (req, res) => {
       'GET /api/data/:id': 'Obtener dato por ID',
       'DELETE /api/data/:id': 'Eliminar dato por ID',
       'POST /api/data/lora': 'Recibir datos del LoRa Receiver por WiFi',
-      'GET /api/ports': 'Listar puertos seriales disponibles'
+      'GET /api/ports': 'Listar puertos seriales disponibles',
+      // MCP (Model Context Protocol)
+      'GET /api/mcp/tools': 'Listar herramientas MCP disponibles',
+      'POST /api/mcp/execute': 'Ejecutar una herramienta MCP',
+      'POST /api/mcp/execute-multiple': 'Ejecutar múltiples herramientas',
+      'POST /api/mcp/analyze': 'Análisis integrado (sensor + clima + Gemini)',
+      // Clima
+      'GET /api/mcp/weather/current': 'Clima actual por ciudad o coordenadas',
+      'GET /api/mcp/weather/forecast': 'Pronóstico del tiempo (hasta 5 días)',
+      'GET /api/mcp/weather/rain': 'Probabilidad de lluvia',
+      // Gemini AI
+      'POST /api/mcp/gemini/generate': 'Generar texto con Gemini',
+      'POST /api/mcp/gemini/chat': 'Chat con historial usando Gemini',
+      'POST /api/mcp/gemini/analyze': 'Analizar sensor con clima usando Gemini'
+    },
+    mcpEnabled: {
+      weather: !!process.env.OPENWEATHER_API_KEY,
+      gemini: !!process.env.GEMINI_API_KEY
     }
   });
 });

@@ -10,6 +10,9 @@ Backend en Node.js para recibir datos del **WiFi LoRa 32 V3 de Heltec** a travé
 - ✅ API REST completa para consultar datos
 - ✅ Captura de métricas LoRa (RSSI, SNR)
 - ✅ Estadísticas y análisis de datos
+- ✅ **Integración MCP (Model Context Protocol)**
+- ✅ **API de Clima (OpenWeatherMap)** - Clima actual, pronósticos y probabilidad de lluvia
+- ✅ **Google Gemini AI** - Análisis inteligente y recomendaciones contextuales
 
 ## 🔧 Requisitos Previos
 
@@ -32,17 +35,26 @@ npm install
 
 3. **Configurar variables de entorno**:
 
-Copia el archivo `.env.example` a `.env`:
+Copia el archivo `.env.example` a `.env` en la carpeta `src/`:
 ```bash
-cp .env.example .env
+cp src/.env.example src/.env
 ```
 
-Edita `.env` con tus configuraciones:
+O en Windows:
+```bash
+copy src\.env.example src\.env
+```
+
+Edita `src/.env` con tus configuraciones:
 ```env
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/lora_data
+PORT=3007
+MONGODB_URI=mongodb+srv://LoRaBackend:lora123@cluster0.so8rlda.mongodb.net/?appName=Cluster0
 SERIAL_PORT=COM3          # Cambia según tu sistema
 SERIAL_BAUDRATE=115200
+
+# API Keys para funcionalidades MCP (opcionales)
+OPENWEATHER_API_KEY=tu_api_key_aqui      # https://openweathermap.org/api
+GEMINI_API_KEY=tu_api_key_aqui          # https://makersuite.google.com/app/apikey
 ```
 
 ### 🔍 Encontrar el puerto serial correcto
@@ -169,6 +181,48 @@ DELETE /api/data/:id
 GET /api/ports
 ```
 Útil para identificar el puerto correcto del dispositivo.
+
+### 9. MCP (Model Context Protocol) - Nuevo! 🌟
+
+#### Listar Herramientas Disponibles
+```
+GET /api/mcp/tools
+```
+
+#### Clima Actual
+```
+GET /api/mcp/weather/current?city=Guatemala
+```
+
+#### Pronóstico del Tiempo
+```
+GET /api/mcp/weather/forecast?city=Guatemala&days=5
+```
+
+#### Probabilidad de Lluvia
+```
+GET /api/mcp/weather/rain?city=Guatemala&days=5
+```
+
+#### Análisis Integrado (Sensor + Clima + Gemini AI)
+```
+POST /api/mcp/analyze
+Body: {
+  "sensorId": "ID_DEL_SENSOR",
+  "city": "Guatemala",
+  "question": "¿Cómo afecta el clima al nivel de agua?"
+}
+```
+
+#### Generar Texto con Gemini
+```
+POST /api/mcp/gemini/generate
+Body: {
+  "prompt": "Explica cómo funciona un sensor ultrasónico"
+}
+```
+
+**📖 Para más detalles sobre MCP, consulta [MCP_INTEGRATION.md](./MCP_INTEGRATION.md)**
 
 ## 📊 Estructura de Datos en MongoDB
 
