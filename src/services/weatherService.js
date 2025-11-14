@@ -137,15 +137,30 @@ class WeatherService {
   async getRainProbability(city, days = 5) {
     const forecast = await this.getForecast(city, days);
     
-    const rainAnalysis = forecast.dailyForecast.map(day => ({
-      date: day.date,
-      maxProbability: Math.max(...day.forecasts.map(f => f.pop)),
-      avgProbability: day.forecasts.reduce((sum, f) => sum + f.pop, 0) / day.forecasts.length,
-      totalRain: day.forecasts.reduce((sum, f) => sum + f.rain, 0),
-      hasRain: day.forecasts.some(f => f.rain > 0),
-      description: day.forecasts[0].description,
-      main: day.forecasts[0].main
-    }));
+    const rainAnalysis = forecast.dailyForecast.map(day => {
+      const forecasts = day.forecasts || [];
+      if (forecasts.length === 0) {
+        return {
+          date: day.date,
+          maxProbability: 0,
+          avgProbability: 0,
+          totalRain: 0,
+          hasRain: false,
+          description: 'N/A',
+          main: 'N/A'
+        };
+      }
+
+      return {
+        date: day.date,
+        maxProbability: Math.max(...forecasts.map(f => f.pop || 0)),
+        avgProbability: forecasts.reduce((sum, f) => sum + (f.pop || 0), 0) / forecasts.length,
+        totalRain: forecasts.reduce((sum, f) => sum + (f.rain || 0), 0),
+        hasRain: forecasts.some(f => (f.rain || 0) > 0),
+        description: forecasts[0]?.description || 'N/A',
+        main: forecasts[0]?.main || 'N/A'
+      };
+    });
 
     return {
       success: true,
@@ -155,7 +170,7 @@ class WeatherService {
       summary: {
         daysWithRain: rainAnalysis.filter(d => d.hasRain).length,
         totalDays: rainAnalysis.length,
-        highestProbability: Math.max(...rainAnalysis.map(d => d.maxProbability))
+        highestProbability: rainAnalysis.length > 0 ? Math.max(...rainAnalysis.map(d => d.maxProbability)) : 0
       }
     };
   }
@@ -164,6 +179,10 @@ class WeatherService {
    * Agrupa el pronóstico por día
    */
   groupByDay(forecast) {
+    if (!forecast || forecast.length === 0) {
+      return [];
+    }
+
     const grouped = {};
     
     forecast.forEach(item => {
@@ -177,15 +196,29 @@ class WeatherService {
       grouped[dateKey].forecasts.push(item);
     });
 
-    return Object.values(grouped).map(day => ({
-      date: day.date,
-      forecasts: day.forecasts,
-      avgTemp: day.forecasts.reduce((sum, f) => sum + f.temperature, 0) / day.forecasts.length,
-      minTemp: Math.min(...day.forecasts.map(f => f.minTemp)),
-      maxTemp: Math.max(...day.forecasts.map(f => f.maxTemp)),
-      avgHumidity: day.forecasts.reduce((sum, f) => sum + f.humidity, 0) / day.forecasts.length,
-      maxRainProbability: Math.max(...day.forecasts.map(f => f.pop))
-    }));
+    return Object.values(grouped).map(day => {
+      if (!day.forecasts || day.forecasts.length === 0) {
+        return {
+          date: day.date,
+          forecasts: day.forecasts || [],
+          avgTemp: 0,
+          minTemp: 0,
+          maxTemp: 0,
+          avgHumidity: 0,
+          maxRainProbability: 0
+        };
+      }
+
+      return {
+        date: day.date,
+        forecasts: day.forecasts,
+        avgTemp: day.forecasts.reduce((sum, f) => sum + f.temperature, 0) / day.forecasts.length,
+        minTemp: Math.min(...day.forecasts.map(f => f.minTemp)),
+        maxTemp: Math.max(...day.forecasts.map(f => f.maxTemp)),
+        avgHumidity: day.forecasts.reduce((sum, f) => sum + f.humidity, 0) / day.forecasts.length,
+        maxRainProbability: Math.max(...day.forecasts.map(f => f.pop))
+      };
+    });
   }
 
   /**
