@@ -176,13 +176,15 @@ class MCPService {
    */
   async integratedAnalysis(sensorData, city, options = {}) {
     try {
+      const { model } = options;  // Extraer el modelo de options
+      
       // 1. Obtener clima actual
       const currentWeather = await weatherService.getCurrentWeather(
         city,
         options.units || 'metric',
         options.lang || 'es'
       );
-
+  
       // 2. Obtener pronóstico
       const forecast = await weatherService.getForecast(
         city,
@@ -190,23 +192,25 @@ class MCPService {
         options.units || 'metric',
         options.lang || 'es'
       );
-
-      // 3. Análisis con Gemini
+  
+      // 3. Análisis con Gemini - pasar el modelo
       const analysis = await geminiService.analyzeSensorWithWeather(
         sensorData,
         {
           ...currentWeather,
           pop: forecast.dailyForecast[0]?.maxRainProbability || 0
         },
-        options.question
+        options.question,
+        model  // Pasar el modelo aquí
       );
-
-      // 4. Recomendaciones
+  
+      // 4. Recomendaciones - pasar el modelo
       const recommendations = await geminiService.generateRecommendations(
         sensorData,
-        forecast
+        forecast,
+        model  // Pasar el modelo aquí
       );
-
+  
       return {
         success: true,
         sensorData,

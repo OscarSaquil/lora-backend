@@ -25,7 +25,7 @@ class GeminiService {
 
     try {
       const model = this.client.getGenerativeModel({ 
-        model: options.model || 'gemini-pro',
+        model: options.model || 'gemini-2.5-flash',
         ...options.modelOptions 
       });
 
@@ -36,7 +36,7 @@ class GeminiService {
       return {
         success: true,
         text,
-        model: options.model || 'gemini-pro',
+        model: options.model || 'gemini-2.5-flash',
         usage: {
           promptTokens: result.usageMetadata?.promptTokenCount || 0,
           completionTokens: result.usageMetadata?.candidatesTokenCount || 0,
@@ -61,7 +61,7 @@ class GeminiService {
 
     try {
       const model = this.client.getGenerativeModel({ 
-        model: options.model || 'gemini-pro',
+        model: options.model || 'gemini-2.5-flash',
         ...options.modelOptions 
       });
 
@@ -81,7 +81,7 @@ class GeminiService {
       return {
         success: true,
         text,
-        model: options.model || 'gemini-pro'
+        model: options.model || 'gemini-2.5-flash'
       };
     } catch (error) {
       throw new Error(`Error al generar con historial: ${error.message}`);
@@ -94,7 +94,7 @@ class GeminiService {
    * @param {Object} weatherData - Datos del clima
    * @param {string} question - Pregunta específica
    */
-  async analyzeSensorWithWeather(sensorData, weatherData, question = null) {
+  async analyzeSensorWithWeather(sensorData, weatherData, question = null, model = null) {
     if (!this.client) {
       throw new Error('GEMINI_API_KEY no configurada');
     }
@@ -120,14 +120,14 @@ Datos del clima actual:
       : `${context}\n\nAnaliza estos datos del sensor y el clima, y proporciona insights relevantes sobre cómo el clima podría afectar las lecturas del sensor o el nivel de agua.`;
 
     return await this.generateText(prompt, {
-      model: 'gemini-pro'
+      model: 'gemini-2.5-flash'
     });
   }
 
   /**
    * Genera recomendaciones basadas en datos de sensores y clima
    */
-  async generateRecommendations(sensorData, weatherForecast) {
+  async generateRecommendations(sensorData, weatherForecast, model = null) {
     if (!this.client) {
       throw new Error('GEMINI_API_KEY no configurada');
     }

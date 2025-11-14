@@ -68,7 +68,7 @@ router.post('/execute-multiple', async (req, res) => {
  */
 router.post('/analyze', async (req, res) => {
   try {
-    const { sensorId, city, question, options } = req.body;
+    const { sensorId, city, question, model, options } = req.body;  // Agregar 'model'
 
     if (!sensorId) {
       return res.status(400).json({
@@ -96,11 +96,11 @@ router.post('/analyze', async (req, res) => {
     // Convertir a objeto plano
     const sensorDataObj = sensorData.toObject();
 
-    // Ejecutar análisis integrado
+    // Ejecutar análisis integrado - pasar el modelo en options
     const result = await mcpService.integratedAnalysis(
       sensorDataObj,
       city,
-      { question, ...options }
+      { question, model, ...options }  // Incluir 'model' aquí
     );
 
     res.json(result);
