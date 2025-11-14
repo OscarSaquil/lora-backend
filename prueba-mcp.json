@@ -1,0 +1,110 @@
+{
+  "ejemplos": {
+    "1_clima_actual": {
+      "metodo": "POST",
+      "url": "https://lora-backend-9606.onrender.com/api/mcp/execute",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "tool": "weather",
+        "params": {
+          "action": "current",
+          "city": "Guatemala",
+          "units": "metric",
+          "lang": "es"
+        }
+      },
+      "nota": "✅ CORRECTO: tool='weather', action='current'"
+    },
+    "2_pronostico": {
+      "metodo": "POST",
+      "url": "https://lora-backend-9606.onrender.com/api/mcp/execute",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "tool": "weather",
+        "params": {
+          "action": "forecast",
+          "city": "Guatemala",
+          "days": 5,
+          "units": "metric",
+          "lang": "es"
+        }
+      },
+      "nota": "✅ CORRECTO: tool='weather', action='forecast'"
+    },
+    "3_probabilidad_lluvia": {
+      "metodo": "POST",
+      "url": "https://lora-backend-9606.onrender.com/api/mcp/execute",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "tool": "weather",
+        "params": {
+          "action": "rain",
+          "city": "Guatemala",
+          "days": 5
+        }
+      },
+      "nota": "✅ CORRECTO: tool='weather', action='rain'"
+    },
+    "4_gemini_generar": {
+      "metodo": "POST",
+      "url": "https://lora-backend-9606.onrender.com/api/mcp/execute",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "tool": "gemini",
+        "params": {
+          "action": "generate",
+          "prompt": "Explica brevemente qué es un sensor ultrasónico",
+          "model": "gemini-pro"
+        }
+      },
+      "nota": "✅ CORRECTO: tool='gemini', action='generate'"
+    },
+    "5_clima_get_simple": {
+      "metodo": "GET",
+      "url": "https://lora-backend-9606.onrender.com/api/mcp/weather/current?city=Guatemala&units=metric&lang=es",
+      "nota": "✅ Forma más simple de obtener clima (GET en lugar de POST)"
+    },
+    "errores_comunes": {
+      "error_1": {
+        "incorrecto": {
+          "tool": "get_weather",
+          "params": {}
+        },
+        "correcto": {
+          "tool": "weather",
+          "params": {
+            "action": "current",
+            "city": "Guatemala"
+          }
+        },
+        "explicacion": "❌ NO uses 'get_weather', usa 'weather' con action='current'"
+      },
+      "error_2": {
+        "incorrecto": {
+          "tool": "weather",
+          "params": {
+            "action": "get_current",
+            "city": "Guatemala"
+          }
+        },
+        "correcto": {
+          "tool": "weather",
+          "params": {
+            "action": "current",
+            "city": "Guatemala"
+          }
+        },
+        "explicacion": "❌ NO uses 'get_current', usa 'current'"
+      }
+    }
+  }
+}
+

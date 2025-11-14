@@ -11,3 +11,9 @@ services:
         value: 10000
       - key: MONGODB_URI
         sync: false
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DEVICE_KEY
+        sync: false
