@@ -35,20 +35,15 @@ npm install
 
 3. **Configurar variables de entorno**:
 
-Copia el archivo `.env.example` a `.env` en la carpeta `src/`:
+Copia el archivo `.env.example` a `.env`:
 ```bash
-cp src/.env.example src/.env
+cp .env.example .env
 ```
 
-O en Windows:
-```bash
-copy src\.env.example src\.env
-```
-
-Edita `src/.env` con tus configuraciones:
+Edita `.env` con tus configuraciones:
 ```env
-PORT=3007
-MONGODB_URI=mongodb+srv://LoRaBackend:lora123@cluster0.so8rlda.mongodb.net/?appName=Cluster0
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/lora_data
 SERIAL_PORT=COM3          # Cambia según tu sistema
 SERIAL_BAUDRATE=115200
 

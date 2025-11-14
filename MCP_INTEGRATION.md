@@ -16,7 +16,7 @@ Este proyecto ahora incluye integración con MCP (Model Context Protocol) que pe
 1. Visita https://openweathermap.org/api
 2. Crea una cuenta gratuita
 3. Obtén tu API key
-4. Agrega al `src/.env`:
+4. Agrega al `.env`:
 ```env
 OPENWEATHER_API_KEY=tu_api_key_aqui
 ```
@@ -24,12 +24,10 @@ OPENWEATHER_API_KEY=tu_api_key_aqui
 #### Google Gemini API
 1. Visita https://makersuite.google.com/app/apikey
 2. Crea una API key
-3. Agrega al `src/.env`:
+3. Agrega al `.env`:
 ```env
 GEMINI_API_KEY=tu_api_key_aqui
 ```
-
-**Nota:** El archivo `.env` debe estar en la carpeta `src/`, no en la raíz del proyecto.
 
 ### 2. Instalar Dependencias
 
@@ -364,8 +362,8 @@ const analysis = await fetch('/api/mcp/gemini/analyze', {
 
 ## 🔒 Seguridad
 
-- Las API keys deben estar en `src/.env` y nunca en el código
-- El archivo `src/.env` está en `.gitignore` y no se versiona
+- Las API keys deben estar en `.env` y nunca en el código
+- Agrega `.env` a `.gitignore`
 - Considera usar variables de entorno en producción
 
 ## 📚 Recursos
