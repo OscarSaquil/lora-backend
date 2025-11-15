@@ -23,7 +23,7 @@ connectDB();
 // Rutas
 app.use('/api', apiRoutes);
 app.use('/api/mcp', mcpRoutes);
-app.use('/api/telegram', telegramRoutes);
+app.use('/telegram', telegramRoutes);
 
 // Ruta raíz
 app.get('/', (req, res) => {
