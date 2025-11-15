@@ -8,7 +8,7 @@ require('dotenv').config();
 
 async function setupWebhook() {
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  const webhookUrl = process.env.WEBHOOK_URL; // Tu URL pública, ej: https://tu-dominio.com/telegram/webhook
+  const webhookUrl = process.env.WEBHOOK_URL;
 
   if (!token) {
     console.error('❌ Error: TELEGRAM_BOT_TOKEN no configurado en .env');

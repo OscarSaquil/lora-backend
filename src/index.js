@@ -12,8 +12,29 @@ const telegramRoutes = require('./routes/telegram');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// ✅ CORS configurado correctamente
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  'https://lora-frontend.vercel.app'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Permitir peticiones sin origen (Postman, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  credentials: true
+}));
+
+// Resto del middleware
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -81,6 +102,7 @@ if (process.env.SERIAL_PORT && process.env.NODE_ENV !== 'production') {
 app.listen(PORT, async () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`📦 Modo: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 CORS habilitado para: ${allowedOrigins.join(', ')}`);
   
   // Intentar conectar al puerto serial solo en desarrollo
   if (serialService) {
