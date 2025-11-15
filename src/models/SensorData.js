@@ -12,7 +12,8 @@ const sensorDataSchema = new mongoose.Schema({
   depth_cm: { type: Number },
   h_cm:     { type: Number },
   ts:       { type: Number },
-
+  //para commit
+  
   // Radio
   rssi: { type: Number },
   snr:  { type: Number },
