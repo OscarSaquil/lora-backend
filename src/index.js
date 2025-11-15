@@ -7,6 +7,7 @@ const connectDB = require('./config/database');
 const SerialService = require('./services/serialService');
 const apiRoutes = require('./routes/api');
 const mcpRoutes = require('./routes/mcp');
+const telegramRoutes = require('./routes/telegram');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ connectDB();
 // Rutas
 app.use('/api', apiRoutes);
 app.use('/api/mcp', mcpRoutes);
+app.use('/api/telegram', telegramRoutes);
 
 // Ruta raíz
 app.get('/', (req, res) => {

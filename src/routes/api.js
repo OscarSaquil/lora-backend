@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const SensorData = require('../models/SensorData');
+const AlertService = require('../services/alertService');
 
 const onlyValidDefault = (q) => ({
   ...q,
@@ -246,6 +247,13 @@ router.post('/data/lora', requireDeviceKey, async (req, res) => {
       rawData:  JSON.stringify(payload),
       receivedAt: new Date()
     });
+
+    // Ejecutar verificación de alertas en background (no bloquear respuesta)
+    try {
+      AlertService.checkAndNotify(doc.toObject()).catch(err => console.error('[AlertService]', err.message));
+    } catch (err) {
+      console.error('Error scheduling alert check', err.message);
+    }
 
     return res.status(201).json({ success: true, data: { id: doc._id } });
   } catch (error) {
