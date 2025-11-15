@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Subscriber = require('../models/Subscriber');
+const notificationService = require('../services/notificationService');
 
 /**
  * Webhook endpoint for Telegram updates.
@@ -67,4 +68,26 @@ router.get('/subscribers', async (req, res) => {
   }
 });
 
+// Admin-protected broadcast endpoint: sends `message` to all subscribers
+router.post('/broadcast', async (req, res) => {
+  try {
+    const apiKey = process.env.ADMIN_API_KEY;
+    if (apiKey) {
+      const provided = req.get('X-API-KEY');
+      if (!provided || provided !== apiKey) {
+        return res.status(401).json({ success: false, error: 'Invalid API key' });
+      }
+    }
+
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ success: false, error: 'message required' });
+
+    const results = await notificationService.sendTelegram(message);
+    res.json({ success: true, results });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
+
